@@ -17,8 +17,8 @@ export const createPostService = async (createPostObject) =>{
     return post;
 }
 
-export const getAllPostService = async (offset, limit) =>{
-    const posts = await findAllPosts(offset, limit);
+export const getAllPostService = async (offset, limit, user) =>{
+    const posts = await findAllPosts(offset, limit, user);
     const totalDocuments = await countAllPosts();
     const totalpages = Math.ceil(totalDocuments/limit);
     return {

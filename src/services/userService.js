@@ -1,13 +1,22 @@
 import { userSignUp } from "../repositories/userRepository.js";
-import { findUserByEmailId, findUserById } from "../repositories/userRepository.js";
+import { findUserByEmailId, findUserById, findAllUsersByPrefix } from "../repositories/userRepository.js";
+import { createUserCommunity , getUserCommunityByUserId} from "../repositories/communityRepository.js";
 import bcrypt from 'bcrypt';
 import { generateJWT } from "../utils/jwt.js";
+import { getPostFromFollowingArray , getPostsOtherThanUserId} from "../repositories/postRepository.js";
 export const signUpUser = async (details) => {
     try{
         const response = await userSignUp(details);
+        if(!response){
+            throw{
+                status : 500,
+                message : 'Internal Server Error'
+            }
+        }
+        await createUserCommunity(response._id);
         return response;
     }catch(error){
-        console.log(error);
+        throw error;
     }
 }
 export const signInUser = async (details) =>{
@@ -52,5 +61,35 @@ export const doesUserExist = async (details) => {
         return user;
     }catch(error){
         console.log(error);
+    }
+}
+
+export const getAllUsersService = async ( prefix ) =>{
+    try{
+        const user = await findAllUsersByPrefix(prefix);
+        return user;
+    }catch(error){
+        throw error;
+    }
+}
+
+export const getFeedForUserService = async(userId)=>{
+    try{
+        const userCommunity = await getUserCommunityByUserId(userId);
+        console.log(userCommunity);
+        const following = userCommunity.following;
+        const feed = await getPostFromFollowingArray(following);
+        return feed;
+    }catch(error){
+        throw error;
+    }
+}
+
+export const getAllPostFeedForUserService = async(userId)=>{
+    try{
+        const posts = await getPostsOtherThanUserId(userId);
+        return posts;
+    }catch(error){
+        throw error;
     }
 }

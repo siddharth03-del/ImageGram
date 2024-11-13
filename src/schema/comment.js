@@ -9,6 +9,10 @@ const commentSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         required : true
     },
+    username : {
+        type : String,
+        required : true
+    },
     content_id : {
         type : mongoose.Schema.Types.ObjectId,
         required : true
@@ -20,7 +24,13 @@ const commentSchema = new mongoose.Schema({
     likes : {
         type : Number,
         default : 0
-    }
+    },
+    replies : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "comment"
+        }
+    ]
 },
 {
     timestamps : true

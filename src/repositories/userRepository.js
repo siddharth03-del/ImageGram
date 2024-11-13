@@ -7,7 +7,7 @@ export const userSignUp = async (detailsObject) =>{
         const user = await users.create({username, email, password});
         return user;
     }catch(error){
-        console.log(error);
+        throw error;
     }
 }
 
@@ -22,6 +22,15 @@ export const findUserByEmailId = async (emailId) =>{
 export const findUserById = async (_id) => {
     try{
         const user = await users.findById(_id);
+        return user;
+    }catch(error){
+        console.log(error);
+    }
+}
+
+export const findAllUsersByPrefix = async (prefix) =>{
+    try{
+        const user = await users.find({username : {$regex : prefix, $options : "i"}}).select('username');
         return user;
     }catch(error){
         console.log(error);

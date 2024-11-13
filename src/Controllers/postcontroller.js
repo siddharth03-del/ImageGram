@@ -20,7 +20,8 @@ export async function getAllPosts(req, res){
     try{
         const limit = req.query.limit || 10;
         const offset = req.query.offset || 0;
-        const posts = await getAllPostService(offset, limit);
+        const user = req.user._id;
+        const posts = await getAllPostService(offset, limit, user);
         return res.status(201).json({
             success: true,
             message : "All posts fetched successfully",

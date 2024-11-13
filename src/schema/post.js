@@ -20,7 +20,13 @@ const postSchema = new mongoose.Schema({
     count_likes : {
         type: Number,
         default : 0
-    }
+    },
+    comments : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'Comment'
+        }
+    ]
 }, {timestamps: true});
 const post = mongoose.model("Post", postSchema); // post collection
 export default post;

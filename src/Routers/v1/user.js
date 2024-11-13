@@ -1,6 +1,10 @@
 import express from 'express';
-import { signUp , signIn} from '../../Controllers/userController.js';
+import { signUp , signIn, getAllUsers, getFeedForUser , getAllPostFeedForUser} from '../../Controllers/userController.js';
+import { isAuthenticated } from '../../Middlewares/authMiddleware.js';
 const router = express.Router();
 router.post('/signup', signUp);
 router.post('/signin', signIn);
+router.get('/all', isAuthenticated, getAllUsers);
+router.get('/feed', isAuthenticated, getFeedForUser);
+router.get('/feedall', isAuthenticated, getAllPostFeedForUser);
 export default router;
