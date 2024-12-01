@@ -155,6 +155,7 @@ export const getPostsOtherThanUserId = async(user_id, page, limit) => {
         const skip = limit * (page - 1);
         const posts = await Post.aggregate([
             { $match: { user: { $ne: user_id } } },
+            { $sort: { createdAt: -1 } },
             { $skip: skip },
             { $limit: limit },
             {
