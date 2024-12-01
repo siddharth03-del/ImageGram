@@ -130,9 +130,16 @@ export const verifyTokenService = async(token)=>{
         return {valid : true};
     }catch(error){
         console.log(error);
-        throw {
-            status : 401,
-            message  : "Internal Server Error"
+        if(error.name === "TokenExpiredError"){
+            return {
+                valid : false
+            };
+        }
+        else{
+            throw{
+                status : 500, 
+                message : "Internal Server Error"
+            }
         }
     }
 }
