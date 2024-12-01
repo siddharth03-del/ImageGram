@@ -7,13 +7,24 @@ export const userSignUp = async (detailsObject) =>{
         const user = await users.create({username, email, password});
         return user;
     }catch(error){
-        throw error;
+        console.log(error);
+        if(error.name == "ValidationError"){
+            throw {
+                status : 400,
+                message : "Invalid email format"
+            }
+        }
+        throw {
+            status : 500,
+            message : "Unexpected error occured"
+        }
     }
 }
 
 export const findUserByEmailId = async (emailId) =>{
     try{
-        const user = await users.find({email : emailId}).exec();
+        const user = await users.findOne({email : emailId}).exec();
+        console.log(user);
         return user;
     }catch(error){
         console.log(error);
