@@ -28,9 +28,28 @@ export const findUserById = async (_id) => {
     }
 }
 
-export const findAllUsersByPrefix = async (prefix) =>{
+export const findAllUsersByPrefix = async (prefix, page, limit) =>{
     try{
-        const user = await users.find({username : {$regex : prefix, $options : "i"}}).select('username');
+        const skip = limit*(page -1);
+        const user = await users.find({username : {$regex : prefix, $options : "i"}}, {"username" : 1, "_id" : 1});
+        return user;
+    }catch(error){
+        console.log(error);
+    }
+}
+
+export const getUsername = async (userId)=>{
+    try{
+        const username = await users.findOne({_id : userId}, {username : 1});
+        return username;
+    }catch(error){
+        console.log(error);
+    }
+}
+
+export const findUserByUsername = async (username)=>{
+    try{
+        const user = await users.findOne({username});
         return user;
     }catch(error){
         console.log(error);

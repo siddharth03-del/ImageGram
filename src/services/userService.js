@@ -2,8 +2,10 @@ import { userSignUp } from "../repositories/userRepository.js";
 import { findUserByEmailId, findUserById, findAllUsersByPrefix } from "../repositories/userRepository.js";
 import { createUserCommunity , getUserCommunityByUserId} from "../repositories/communityRepository.js";
 import bcrypt from 'bcrypt';
-import { generateJWT } from "../utils/jwt.js";
+import { generateJWT, verifyJWT } from "../utils/jwt.js";
 import { getPostFromFollowingArray , getPostsOtherThanUserId} from "../repositories/postRepository.js";
+import { createProfileService } from "./profileService.js";
+import { getImageAndNameByUserId } from "../repositories/profileRepository.js";
 export const signUpUser = async (details) => {
     try{
         const response = await userSignUp(details);
@@ -14,6 +16,7 @@ export const signUpUser = async (details) => {
             }
         }
         await createUserCommunity(response._id);
+        await createProfileService(response._id);
         return response;
     }catch(error){
         throw error;
@@ -64,14 +67,38 @@ export const doesUserExist = async (details) => {
     }
 }
 
-export const getAllUsersService = async ( prefix ) =>{
-    try{
-        const user = await findAllUsersByPrefix(prefix);
-        return user;
-    }catch(error){
+export const getAllUsersService = async (prefix, page, limit) => {
+    try {
+        const users = await findAllUsersByPrefix(prefix, page, limit);
+        const result = [];
+        
+        // Use Promise.all to await all asynchronous operations within the forEach
+        await Promise.all(users.map(async (e) => {
+            const response = await getImageAndNameByUserId(e._id);
+            const obj = new Object();
+            obj._id = e._id;
+            obj.username = e.username;
+            try{
+                const image = response.image;
+                const name = response.name;
+                if(image){
+                    obj.image = image;
+                }
+                if(name){
+                    obj.name = name;
+                }
+            }catch(error){
+                console.log(error);
+            }
+            result.push(obj);
+        }));
+        
+        return result;
+    } catch (error) {
         throw error;
     }
-}
+};
+
 
 export const getFeedForUserService = async(userId)=>{
     try{
@@ -85,11 +112,28 @@ export const getFeedForUserService = async(userId)=>{
     }
 }
 
-export const getAllPostFeedForUserService = async(userId)=>{
+export const getAllPostFeedForUserService = async(userId, page, limit)=>{
     try{
-        const posts = await getPostsOtherThanUserId(userId);
+        const posts = await getPostsOtherThanUserId(userId, page, limit);
         return posts;
     }catch(error){
         throw error;
     }
 }
+
+export const verifyTokenService = async(token)=>{
+    try{
+        const user = verifyJWT(token);
+        if(!user){
+            return {valid : false};
+        }
+        return {valid : true};
+    }catch(error){
+        console.log(error);
+        throw {
+            status : 401,
+            message  : "Internal Server Error"
+        }
+    }
+}
+

@@ -6,7 +6,6 @@ export const createCommentService = async(commentObject) => {
         const text = commentObject.text;
         const type = commentObject.type;
         const content_id = commentObject.content_id;
-        const username = commentObject.username;
         const parent = await fetchParentElement(type, content_id);
         if(!parent){
             throw{
@@ -15,7 +14,7 @@ export const createCommentService = async(commentObject) => {
             }
         }
         console.log(parent, "parent");
-        const child = await createComment(id, text, type, content_id, username);
+        const child = await createComment(id, text, type, content_id);
         const response = addChildCommentToParent(parent, child, type);
         return response;
     }catch(error){

@@ -1,4 +1,4 @@
-import { createPostLikeService, createCommentLikeService, countLikeOnPostService, isPostLikedByUserService } from "../services/likeService.js";
+import { createPostLikeService, createCommentLikeService, countLikeOnPostService, isPostLikedByUserService , isCommentLikedByUserService} from "../services/likeService.js";
 export const createPostLike = async(req, res) => {
     try{
         const user_id = req.user._id;
@@ -62,6 +62,24 @@ export const isPostLikedByUser = async(req, res)=>{
         res.status(200).json({
             success : true,
             message : response
+        })
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            success : false,
+            message : error.message
+        })
+    }
+}
+
+export const isCommentLikedByUser = async(req, res)=>{
+    try{
+        const comment_id = req.query.comment;
+        const user = req.user._id;
+        const response = await isCommentLikedByUserService(comment_id, user);
+        res.status(200).json({
+            success : true,
+            data : response
         })
     }catch(error){
         console.log(error);

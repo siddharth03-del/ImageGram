@@ -7,11 +7,8 @@ const commentSchema = new mongoose.Schema({
     },
     user : {
         type : mongoose.Schema.Types.ObjectId,
-        required : true
-    },
-    username : {
-        type : String,
-        required : true
+        required : true,
+        ref : 'user'
     },
     content_id : {
         type : mongoose.Schema.Types.ObjectId,
@@ -28,7 +25,7 @@ const commentSchema = new mongoose.Schema({
     replies : [
         {
             type : mongoose.Schema.Types.ObjectId,
-            ref : "comment"
+            ref : 'comment'
         }
     ]
 },

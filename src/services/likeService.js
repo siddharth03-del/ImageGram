@@ -1,5 +1,5 @@
 import { getPostById } from "./postService.js";
-import { createPostLike, findLike} from "../repositories/postLikeRepository.js";
+import { createPostLike, findLikePost} from "../repositories/postLikeRepository.js";
 import { findPostById, updatePostLike } from "../repositories/postRepository.js";
 import { createCommentLike, findCommentLike } from "../repositories/commentLikeRepository.js";
 import { updateCommentLike , getCommentById} from "../repositories/commentRepository.js"
@@ -14,7 +14,7 @@ export const createPostLikeService = async(likeObject)=>{
                 message : "post not found"
             }
         }
-        const likeExist = await findLike(user_id, post_id);
+        const likeExist = await findLikePost(user_id, post_id);
         console.log(likeExist, "likeExist");
         if(likeExist){
             throw{
@@ -84,7 +84,26 @@ export const isPostLikedByUserService = async(details)=>{
                 message : "post not found"
             }
         }
-        const response = await findLike(user_id, post_id);
+        const response = await findLikePost(user_id, post_id);
+        return response;
+    }catch(error){
+        throw{
+            status : 500,
+            message : "internal server error"
+        }
+    }
+}
+
+export const isCommentLikedByUserService = async(comment, user)=>{
+    try{
+        const commentElement = getCommentById(comment);
+        if(!commentElement){
+            throw{
+                status : 404,
+                message : "comment not found"
+            }
+        }
+        const response = await findCommentLike(user, comment);
         return response;
     }catch(error){
         throw{

@@ -7,9 +7,7 @@ export const createComment = async(req, res) => {
         const text = details.text;
         const type = details.type;
         const content_id = details.content_id;
-        const username = user.username;
-        console.log(username);
-        const response = await createCommentService({id, text, type, content_id, username});
+        const response = await createCommentService({id, text, type, content_id});
         return res.status(201).json({
             success : true,
             message: 'Comment created successfully',

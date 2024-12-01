@@ -10,7 +10,7 @@ export const createPostLike = async(user_id, post_id)=>{
         }
     }
 }
-export const findLike = async(user_id, post_id)=>{
+export const findLikePost = async(user_id, post_id)=>{
     try{
         const response = await postLike.countDocuments({user_id , post_id});
         console.log(response, "findLike");

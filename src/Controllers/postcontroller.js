@@ -1,3 +1,4 @@
+import { findPostById } from "../repositories/postRepository.js";
 import { createPostService, getAllPostService,  deletePostService, updatePostService, getPostById , deletePostCloudService} from "../services/postService.js";
 export async function createPost(req, res){
     console.log(req.file);
@@ -112,6 +113,29 @@ export async function deletePostFromCloud(req, res, next){
     }catch(error){
         console.log(error);
         return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
+    }
+}
+
+export async function getSinglePost(req, res){
+    try{
+        const postId = req.query.postId;
+        const response = await findPostById(postId);
+        if(!response){
+            return res.status(404).json({
+                success : false,
+                message : "Post not found"
+            })
+        }
+        return res.status(200).json({
+            success : true,
+            data : response
+        })
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
             success : false,
             message : "Internal server error"
         })

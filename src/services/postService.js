@@ -1,6 +1,7 @@
 import { countAllPosts, createPost, deletePostById, updateById , findAllPosts, findPostById} from "../repositories/postRepository.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "../Config/server_config.js";
+import { updateProfilePostsAdd, updateProfilePostsDelete } from "../repositories/profileRepository.js";
 cloudinary.config({
     cloud_name : CLOUD_NAME,
     api_key : CLOUDINARY_API_KEY,
@@ -14,6 +15,7 @@ export const createPostService = async (createPostObject) =>{
     const public_id = createPostObject.public_id;
     const user = createPostObject.user;
     const post = await createPost(caption, image, public_id, user);
+    await updateProfilePostsAdd(user);
     return post;
 }
 
@@ -28,6 +30,7 @@ export const getAllPostService = async (offset, limit, user) =>{
 
 export const deletePostService = async (id) =>{
     const post = await deletePostById(id);
+    await updateProfilePostsDelete(post.user);
     return post;
 }
 
