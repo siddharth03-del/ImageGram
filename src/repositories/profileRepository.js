@@ -92,3 +92,13 @@ export const getImageAndNameByUserId = async(userId)=>{
         console.log(error);
     }
 }
+
+export const deleteProfileOfUser = async(userId)=>{
+    try{
+        const response = await profile.deleteOne({user : userId});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}

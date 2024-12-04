@@ -48,3 +48,13 @@ export const unFollowUser = async(user, unfollow)=>{
         throw error;
     }
 }
+
+export const deleteCommunityOfUser = async(user)=>{
+    try{
+        const response = await community.deleteMany({user});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}

@@ -205,3 +205,23 @@ export const getNumberOfPostsByUserId = async(user_id)=>{
         console.log(error);
     }
 }
+
+export const getPublicIdsByUserId = async(user_id)=>{
+    try{
+        const count = await Post.find({user : user_id}, {public_id : 1});
+        return count;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export const deletePostsOfUser = async(user_id)=>{
+    try{
+        const response = await Post.deleteMany({user : user_id});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}

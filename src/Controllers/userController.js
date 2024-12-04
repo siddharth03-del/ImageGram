@@ -1,5 +1,5 @@
 import { signUpUser , signInUser, getAllUsersService, getAllPostFeedForUserService } from "../services/userService.js";
-import { getFeedForUserService, verifyTokenService } from "../services/userService.js";
+import { getFeedForUserService, verifyTokenService, deleteUserService } from "../services/userService.js";
 export async function signUp(req, res){
     try{
         const details = req.body;
@@ -111,6 +111,23 @@ export async function verifyToken(req, res){
     }catch(error){
         console.log(error);
         res.status(500).json({
+            success : false,
+            message : error.message
+        })
+    }
+}
+
+export async function deleteUser(req, res){
+    try{
+        const user = req.user._id;
+        const response = await deleteUserService(user);
+        return res.status(200).json({
+            success : true,
+            data : response
+        })
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
             success : false,
             message : error.message
         })

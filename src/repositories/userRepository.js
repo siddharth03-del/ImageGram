@@ -66,3 +66,13 @@ export const findUserByUsername = async (username)=>{
         console.log(error);
     }
 }
+
+export const deleteUser = async(userId)=>{
+    try{
+        const response = await users.deleteOne({_id : userId});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}

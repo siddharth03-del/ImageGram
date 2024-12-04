@@ -1,7 +1,6 @@
 import express from 'express';
-import { signUp , signIn, getAllUsers, getFeedForUser , getAllPostFeedForUser, verifyToken} from '../../Controllers/userController.js';
+import { signUp , signIn, getAllUsers, getFeedForUser , getAllPostFeedForUser, verifyToken, deleteUser} from '../../Controllers/userController.js';
 import { isAuthenticated } from '../../Middlewares/authMiddleware.js';
-import { parser } from '../../Config/cloudinaryconfig.js';
 const router = express.Router();
 router.post('/signup', signUp);
 router.post('/signin', signIn);
@@ -9,4 +8,5 @@ router.get('/all', isAuthenticated, getAllUsers);
 router.get('/feed', isAuthenticated, getFeedForUser);
 router.get('/feedall', isAuthenticated, getAllPostFeedForUser);
 router.get('/verifytoken', verifyToken);
+router.delete('/deleteUser', isAuthenticated, deleteUser);
 export default router;

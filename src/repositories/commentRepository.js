@@ -40,3 +40,13 @@ export const getCommentByContentId = async(content_id)=>{
         console.log(error);
     }
 }
+
+export const deleteCommentsOfUser = async(user_id)=>{
+    try{
+        const response = await comments.deleteMany({user : user_id});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}

@@ -1,5 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
-const communitySchema = mongoose.Schema({
+const communitySchema = new mongoose.Schema({
     user : {
         type: mongoose.Schema.Types.ObjectId,
         ref : 'user',

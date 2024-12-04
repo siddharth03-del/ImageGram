@@ -22,3 +22,13 @@ export const findLikePost = async(user_id, post_id)=>{
         }
     }
 }
+
+export const deletePostLikeOfUser = async(user_id)=>{
+    try{
+        const response = await postLike.deleteMany({user_id});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}

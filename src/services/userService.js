@@ -1,11 +1,16 @@
-import { findUserByUsername, userSignUp } from "../repositories/userRepository.js";
+import { deleteUser, findUserByUsername, userSignUp } from "../repositories/userRepository.js";
 import { findUserByEmailId, findUserById, findAllUsersByPrefix } from "../repositories/userRepository.js";
-import { createUserCommunity , getUserCommunityByUserId} from "../repositories/communityRepository.js";
+import { createUserCommunity , deleteCommunityOfUser, getUserCommunityByUserId} from "../repositories/communityRepository.js";
 import bcrypt from 'bcrypt';
 import { generateJWT, verifyJWT } from "../utils/jwt.js";
-import { getPostFromFollowingArray , getPostsOtherThanUserId} from "../repositories/postRepository.js";
+import { deletePostsOfUser, getPostFromFollowingArray , getPostsOtherThanUserId} from "../repositories/postRepository.js";
 import { createProfileService } from "./profileService.js";
-import { getImageAndNameByUserId } from "../repositories/profileRepository.js";
+import { deleteProfileOfUser, getImageAndNameByUserId } from "../repositories/profileRepository.js";
+import mongoose from "mongoose";
+import { deleteCommentLikeOfUser } from "../repositories/commentLikeRepository.js";
+import { deleteCommentsOfUser } from "../repositories/commentRepository.js";
+import { deletePostOfUserFromCloud } from "./postService.js";
+import { deletePostLikeOfUser } from "../repositories/postLikeRepository.js";
 export const signUpUser = async (details) => {
     try{
         const emailExists = await findUserByEmailId(details.email);
@@ -149,7 +154,11 @@ export const verifyTokenService = async(token)=>{
         if(!user){
             return {valid : false};
         }
-        return {valid : true};
+        const response = await doesUserExist(user);
+        if(response){
+            return {valid : true};
+        }
+        return {valid : false};
     }catch(error){
         console.log(error);
         if(error.name === "TokenExpiredError"){
@@ -166,3 +175,27 @@ export const verifyTokenService = async(token)=>{
     }
 }
 
+export const deleteUserService = async(userId)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try{
+        const commentLikedeleted = await deleteCommentLikeOfUser(userId);
+        const commentsDeleted = await deleteCommentsOfUser(userId);
+        const communityDeleted = await deleteCommunityOfUser(userId);
+        await deletePostOfUserFromCloud(userId);
+        const postsDeleted = await deletePostsOfUser(userId);
+        const PostLikeDeleted = await deletePostLikeOfUser(userId);
+        const commentLikeDeleted = await deleteCommentLikeOfUser(userId);
+        const profileDeleted = await deleteProfileOfUser(userId);
+        const userDeleted = await deleteUser(userId);
+        await session.commitTransaction();
+        await session.endSession();
+        return { 
+            success : true,
+            message : "User deleted successfully"
+        };
+    }catch(error){
+        await session.abortTransaction();
+        throw error;
+    }
+}

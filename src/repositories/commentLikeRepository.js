@@ -16,12 +16,11 @@ export const findCommentLike = async(user_id, comment_id)=>{
     }
 }
 
-// export const getCommentLike = async(user_id, comment_id)=>{
-//     try{
-//         const like = await commentLike.({user_id, comment_id});
-//         console.log(like, "getCommentLike");
-//         return like;
-//     }catch(error){
-//         console.log(error);
-//     }
-// }
+export const deleteCommentLikeOfUser = async(user_id)=>{
+    try{
+        const response = await commentLike.deleteMany({user_id});
+        return response;
+    }catch(error){
+        throw error;
+    }
+}

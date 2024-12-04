@@ -1,4 +1,4 @@
-import { countAllPosts, createPost, deletePostById, updateById , findAllPosts, findPostById} from "../repositories/postRepository.js";
+import { countAllPosts, createPost, deletePostById, updateById , findAllPosts, findPostById, getPublicIdsByUserId} from "../repositories/postRepository.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "../Config/server_config.js";
 import { updateProfilePostsAdd, updateProfilePostsDelete } from "../repositories/profileRepository.js";
@@ -54,5 +54,22 @@ export const getPostById = async (id)=>{
         return post;
     }catch(error){
         console.log(error);
+    }
+}
+
+export const deletePostOfUserFromCloud = async(userId)=>{
+    try{
+        const response = await getPublicIdsByUserId(userId);
+        const publicIds = new Array();
+        response.forEach((item) => {
+            publicIds.push(item.public_id);
+        })
+        if(publicIds.length > 0){
+            await cloudinary.api.delete_resources(publicIds).then((result)=>{console.log(result)});
+        }
+        return;
+    }catch(error){
+        console.log(error);
+        throw error;
     }
 }

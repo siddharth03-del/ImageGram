@@ -5,6 +5,7 @@ import { updateProfile } from "../repositories/profileRepository.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "../Config/server_config.js";
 import { findUserById, findUserByUsername, getUsername } from "../repositories/userRepository.js";
+import { deleteCommentsOfUser } from "../repositories/commentRepository.js";
 cloudinary.config({
     cloud_name : CLOUD_NAME,
     api_key : CLOUDINARY_API_KEY,
@@ -79,5 +80,19 @@ export const getExploreProfileService = async(username)=>{
             status : 500,
             message : "Internal server error"
         }
+    }
+}
+
+export const deleteProfileOfUserService = async(userId)=>{
+    try{
+        const profile = await getProfile(userId);
+        if(profile.public_id){
+            await deleteProfilePictureFromCloudService(profile.public_id);
+        }
+        const response = await deleteCommentsOfUser(userId);
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
     }
 }
