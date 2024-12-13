@@ -1,5 +1,5 @@
 import { signUpUser , signInUser, getAllUsersService, getAllPostFeedForUserService } from "../services/userService.js";
-import { getFeedForUserService, verifyTokenService, deleteUserService } from "../services/userService.js";
+import { getFeedForUserService, verifyTokenService, deleteUserService, sendOTPService, verifyOTPService,changeAccountPasswordService } from "../services/userService.js";
 export async function signUp(req, res){
     try{
         const details = req.body;
@@ -130,6 +130,60 @@ export async function deleteUser(req, res){
         return res.status(500).json({
             success : false,
             message : error.message
+        })
+    }
+}
+
+export async function sendOTP(req, res){
+    try{
+        const email = req.body.email;
+        const response = sendOTPService(email);
+        res.status(200).json({
+            success : true,
+            message : "OTP sent successfully",
+            sent : true
+        })
+    }catch(error){
+        res.status(500).json({
+            success : false,
+            message : error.message
+        })
+    }
+}
+
+export async function verifyOTP(req, res){
+    try{
+        const email = req.body.email;
+        const otp = req.body.otp;
+        const response = verifyOTPService(email, otp);
+        res.status(200).json({
+            success : true,
+            message : response.message,
+            valid : response.valid,
+            token : response.token
+        })
+    }catch(error){
+        res.status(500).json({
+            success : false,
+            message : error.message
+        })
+    }
+}
+
+export async function changeAccountPassword(req, res){
+    try{
+        const password = req.body.password;
+        const email = req.body.email;
+        const repsonse = await changeAccountPasswordService(email, password);
+        return res.status(200).json({
+            success : true,
+            message : "Password changed successfully"
+        })
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            success : false,
+            message : "There was an error trying to change the password"
         })
     }
 }

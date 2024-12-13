@@ -1,4 +1,5 @@
 import users from "../schema/user.js";
+import bcrypt from "bcrypt";
 export const userSignUp = async (detailsObject) =>{
     try{
         const username = detailsObject.username;
@@ -70,6 +71,18 @@ export const findUserByUsername = async (username)=>{
 export const deleteUser = async(userId)=>{
     try{
         const response = await users.deleteOne({_id : userId});
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export const changeAccountPassword = async (email, password)=>{
+    try{
+        const SALT = bcrypt.genSaltSync(9);
+        const hashed = bcrypt.hashSync(password, SALT);
+        const response = await users.findOneAndUpdate({email: email}, {password: hashed});
         return response;
     }catch(error){
         console.log(error);

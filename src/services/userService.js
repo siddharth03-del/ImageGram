@@ -1,4 +1,4 @@
-import { deleteUser, findUserByUsername, userSignUp } from "../repositories/userRepository.js";
+import { changeAccountPassword, deleteUser, findUserByUsername, userSignUp } from "../repositories/userRepository.js";
 import { findUserByEmailId, findUserById, findAllUsersByPrefix } from "../repositories/userRepository.js";
 import { createUserCommunity , deleteCommunityOfUser, getUserCommunityByUserId} from "../repositories/communityRepository.js";
 import bcrypt from 'bcrypt';
@@ -11,6 +11,10 @@ import { deleteCommentLikeOfUser } from "../repositories/commentLikeRepository.j
 import { deleteCommentsOfUser } from "../repositories/commentRepository.js";
 import { deletePostOfUserFromCloud } from "./postService.js";
 import { deletePostLikeOfUser } from "../repositories/postLikeRepository.js";
+import { generateOTP } from "../utils/generateOTP.js";
+import { sendOTP} from "../utils/sendmail.js";
+import { verifyOTP } from "../utils/verifyOTP.js";
+import { generateJWTPasswordChange } from "../utils/changepasswordjwt.js";
 export const signUpUser = async (details) => {
     try{
         const emailExists = await findUserByEmailId(details.email);
@@ -78,7 +82,7 @@ export const signInUser = async (details) =>{
 export const userByEmail = async (emailId) =>{
     try{
         const user = await findUserByEmailId(emailId);
-        return response;
+        return user;
     }catch(error){
         console.log(error);
     }
@@ -196,6 +200,55 @@ export const deleteUserService = async(userId)=>{
         };
     }catch(error){
         await session.abortTransaction();
+        throw error;
+    }
+}
+
+export const sendOTPService = (email)=>{
+    try{
+        const otp = generateOTP(email);
+        sendOTP(email, otp);
+        return {
+            success : true,
+            message : "OTP sent successfully",
+            sent : true
+        }
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export const verifyOTPService = (email, otp)=>{
+    try{
+        const response = verifyOTP(email, otp);
+        if(response){
+            const token = generateJWTPasswordChange({email});
+            console.log(token);
+            return {
+                valid : true,
+                message : "OTP is verified",
+                token : token
+            }
+        }
+        else{
+            return {
+                valid : false,
+                message : "OTP is not verified"
+            }
+        }
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export const changeAccountPasswordService = async(email, password)=>{
+    try{
+        const response = changeAccountPassword(email, password);
+        return response
+    }catch(error){
+        console.log(error);
         throw error;
     }
 }
