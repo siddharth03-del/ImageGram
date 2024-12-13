@@ -16,7 +16,7 @@ export async function sendOTP(email, token){
     }catch(error){
         console.log(error);
         setTimeout(()=>{
-            sendEmail(req, res);
+            sendOTP(email, token);
         }, 2000)
     }
 }
