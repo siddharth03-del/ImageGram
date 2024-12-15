@@ -10,8 +10,8 @@ export const transporter = nodemailer.createTransport({
                                                   // Not @developer.gserviceaccount.com
             clientId: CLIENTID, 
             clientSecret: CLIENTSECRET,  
-            refreshToken: REFERSHTOKEN,
-            accessToken : ACCESSTOKEN
+            refreshToken: REFERSHTOKEN,  
+            accessToken : ACCESSTOKEN 
           }
     }
 )
