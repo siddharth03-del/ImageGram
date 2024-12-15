@@ -38,8 +38,8 @@ export const signUpUser = async (details) => {
                 message : 'Internal Server Error'
             }
         }
-        await createUserCommunity(response._id);
-        await createProfileService(response._id);
+        createUserCommunity(response._id);
+        createProfileService(response._id);
         return response;
     }catch(error){
         console.log(error);
