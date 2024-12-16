@@ -1,16 +1,19 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
+import uniqueValidator from 'mongoose-unique-validator';
 const userSchema = new mongoose.Schema({
     username : {
         type : String,
         required : true,
         unique : true,
+        unique : "The username already exists",
         minLength : 5
     },
     email : {
         type : String,
         required : true,
         unique : true,
+        unique : "The email already in use",
         minLength : 5,
         validate : {
             validator : function(emailValue){
@@ -27,6 +30,7 @@ const userSchema = new mongoose.Schema({
 },{
     Timestamp : true
 })
+userSchema.plugin(uniqueValidator, {message : `Error, expected {PATH} to be unique`})
 userSchema.pre('save', function modifyPassword(next){
     const user = this;
     const SALT = bcrypt.genSaltSync(9);

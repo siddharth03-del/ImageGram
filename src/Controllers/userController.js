@@ -6,7 +6,7 @@ export async function signUp(req, res){
         const reponse = await signUpUser(details);
         return res.status(201).json({
             success : "true",
-            user : reponse
+            message : "Successfully signed up"
         })
     }catch(error){
         console.log(error);

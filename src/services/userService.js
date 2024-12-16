@@ -17,20 +17,6 @@ import { verifyOTP } from "../utils/verifyOTP.js";
 import { generateJWTPasswordChange } from "../utils/changepasswordjwt.js";
 export const signUpUser = async (details) => {
     try{
-        const emailExists = await findUserByEmailId(details.email);
-        if(emailExists){
-            throw {
-                status : 400,
-                message : "Use different email address"
-            }
-        }
-        const usernameExists = await findUserByUsername(details.username);
-        if(usernameExists){
-            throw {
-                status : 400,
-                message : "Username already exists"
-            }
-        }
         const response = await userSignUp(details);
         if(!response){
             throw{

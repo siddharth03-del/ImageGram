@@ -8,11 +8,11 @@ export const userSignUp = async (detailsObject) =>{
         const user = await users.create({username, email, password});
         return user;
     }catch(error){
-        console.log(error);
+        console.log(error.message);
         if(error.name == "ValidationError"){
             throw {
                 status : 400,
-                message : "Invalid email format"
+                message : "The username or email already exists. Try using different email or username"
             }
         }
         throw {
