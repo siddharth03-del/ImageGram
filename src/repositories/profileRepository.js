@@ -35,6 +35,10 @@ export const updateProfilePostsAdd = async ( user )=>{
         return response;
     }catch(error){
         console.log(error);
+        throw {
+            success : false,
+            message : "Error updaing profile"
+        }
     }
 }
 

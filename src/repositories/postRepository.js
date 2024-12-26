@@ -7,6 +7,10 @@ export const createPost = async (caption, image, public_id ,user)=>{
         return newPost;
     }catch(error){
         console.log(error);
+        throw {
+            success : false,
+            message : "Error uploading the post detail to mongo"
+        }
     }
 }
 export const findAllPosts = async (offset, limit, user) =>{
@@ -154,7 +158,6 @@ export const getPostsOtherThanUserId = async(user_id, page, limit) => {
         console.log(user_id);
         const skip = limit * (page - 1);
         const posts = await Post.aggregate([
-            { $match: { user: { $ne: user_id } } },
             { $sort: { createdAt: -1 } },
             { $skip: skip },
             { $limit: limit },

@@ -10,13 +10,18 @@ cloudinary.config({
 });
 
 export const createPostService = async (createPostObject) =>{
-    const caption = createPostObject.caption?.trim();
-    const image = createPostObject.image;
-    const public_id = createPostObject.public_id;
-    const user = createPostObject.user;
-    const post = await createPost(caption, image, public_id, user);
-    await updateProfilePostsAdd(user);
-    return post;
+    try{
+        const caption = createPostObject.caption?.trim();
+        const image = createPostObject.image;
+        const public_id = createPostObject.public_id;
+        const user = createPostObject.user;
+        const post = await createPost(caption, image, public_id, user);
+        await updateProfilePostsAdd(user);
+        return post;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
 }
 
 export const getAllPostService = async (offset, limit, user) =>{

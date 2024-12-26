@@ -16,4 +16,8 @@ const cloudstorage = new CloudinaryStorage({
         public_id: (req, file)=> `${Date.now()}-${file.originalname}`
     }
 })
-export const parser = multer({storage : cloudstorage});
+export const parser = multer({storage : cloudstorage, 
+    limits : {
+        fileSize : 1024 * 1024 * 50
+    }
+});

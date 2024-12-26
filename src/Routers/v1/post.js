@@ -4,8 +4,11 @@ import { parser } from '../../Config/cloudinaryconfig.js';
 import { imagevalidate } from '../../Validators/imageValidator.js';
 import { isAuthenticated } from '../../Middlewares/authMiddleware.js';
 const router = express.Router();
-
-router.post('/', isAuthenticated ,parser.single('image'), imagevalidate , createPost);
+const errorHandler = (err, req, res, next) => { 
+    console.error(err.stack); // Log the error 
+    res.status(500).json({ message: err.message }); // Send error response
+    };
+router.post('/', isAuthenticated ,parser.single('image'),imagevalidate, createPost , errorHandler);
 router.delete('/', isAuthenticated , deletePost);
 router.get('/', isAuthenticated , getAllPosts);
 router.get('/single', isAuthenticated, getSinglePost);

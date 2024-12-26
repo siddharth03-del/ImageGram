@@ -1,25 +1,31 @@
 import { findPostById } from "../repositories/postRepository.js";
 import { createPostService, getAllPostService,  deletePostService, updatePostService, getPostById , deletePostCloudService} from "../services/postService.js";
 export async function createPost(req, res){
-    console.log(req.file);
-    const post = await createPostService({
+    try{
+        console.log(req.file, "file object");
+        const post = await createPostService({
         caption: req.body.caption,
         image: req.file.path,
         public_id : req.file.filename,
         user : req.user._id
     });
-    
     return res.status(201).json({
         success: true,
         message: "Post created successfully",
         data: post
     });
-
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            success : false,
+            message : error
+        })
+    }
 }
 
 export async function getAllPosts(req, res){
     try{
-        const limit = req.query.limit || 10;
+        const limit = req.query.limit || 100;
         const offset = req.query.offset || 0;
         const user = req.user._id;
         const posts = await getAllPostService(offset, limit, user);
