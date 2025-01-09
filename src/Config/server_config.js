@@ -10,3 +10,4 @@ export const REFERSHTOKEN = process.env.GMAILREFERESHTOKEN;
 export const ACCESSTOKEN = process.env.GMAILACCESSTOKEN;
 export const CLIENTSECRET = process.env.GMAILCLIENTSECRET;
 export const USER = process.env.GMAILUSER;
+export const GEMINI_KEY = process.env.Gemini;

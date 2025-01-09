@@ -84,3 +84,20 @@ export async function getExploreProfile(req, res){
         })
     }
 }
+
+export async function getProfileOfAnotherUser(req, res){
+    try{
+        const userId = req.query.userId;
+        const response = await getProfileService(userId);
+        return res.status(200).json({
+            success : true,
+            message : "Profile has been fetched successfully",
+            data : response
+        })
+    }catch(error){
+        return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
+    }
+}

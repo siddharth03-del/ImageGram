@@ -43,7 +43,7 @@ export const findUserById = async (_id) => {
 export const findAllUsersByPrefix = async (prefix, page, limit) =>{
     try{
         const skip = limit*(page -1);
-        const user = await users.find({username : {$regex : prefix, $options : "i"}}, {"username" : 1, "_id" : 1});
+        const user = await users.find({username : {$regex : prefix, $options : "i"}}, {"username" : 1, "_id" : 1}).sort({"username" : 1});
         return user;
     }catch(error){
         console.log(error);

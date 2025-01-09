@@ -9,8 +9,18 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { CLIENTID, CLIENTSECRET } from './Config/server_config.js';
 import session from 'express-session';
 import cors from 'cors';
+import { Server } from 'socket.io';
+import { createServer } from 'http';
+import { joinRoomHandler, messageReceivedHandler } from './Controllers/chatSocketController.js';
+import axios_instance from './utils/axios.js';
 const PORT = 3005;
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+    cors : {
+        origin : '*'
+    }
+});
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({extended: true}));
@@ -70,7 +80,22 @@ app.use('/api' ,apiRouter);
 //     return res.json({data : "Image uploaded successfully"});
 // })
 // app.post('/cloudupload', parser.single('image'), createPost);
-app.listen(PORT, ()=>{
+io.on('connection', (socket)=>{
+    console.log('a user connected');
+    joinRoomHandler(io, socket);
+    messageReceivedHandler(io, socket);
+})
+function realoadWebsite(){
+    axios_instance.get('/ping')
+    .then(response=>{
+        console.log("Reloaded your instance")
+    })
+    .catch(error=>{
+        console.log("Error reloading")
+    })
+}
+setInterval(realoadWebsite, 30000);
+server.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);
     connectDB();
 })

@@ -46,7 +46,7 @@ export const signInUser = async (details) =>{
         console.log(isValid);
         if(isValid){
             const token = generateJWT({email : user.email, _id : user._id, username : user.username});
-            return token;
+            return { token , userId : user._id};
         }
         else{
             throw {
