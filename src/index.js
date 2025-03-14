@@ -95,6 +95,11 @@ function realoadWebsite(){
     })
 }
 setInterval(realoadWebsite, 30000);
+
+async function reloadVotingWebsite(){
+    const response = await fetch("https://livevotingplatform.onrender.com/ping")
+}
+setInterval(reloadVotingWebsite, 30000);
 server.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);
     connectDB();
