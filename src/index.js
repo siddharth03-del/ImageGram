@@ -97,7 +97,7 @@ function realoadWebsite(){
 setInterval(realoadWebsite, 30000);
 
 async function reloadVotingWebsite(){
-    const response = await fetch("https://livevotingplatform-36v2.onrender.com/ping")
+    const response = await fetch("https://livevotingplatform.onrender.com/ping")
 }
 setInterval(reloadVotingWebsite, 30000);
 server.listen(PORT, ()=>{
